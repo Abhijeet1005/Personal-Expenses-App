@@ -10,9 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'Personal Expenses',
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          primarySwatch: Colors.lightGreen, accentColor: Colors.amber),
     );
   }
 }
@@ -23,15 +25,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void StartAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return NewTransaction(_addNewTransactions);
-      },
-    );
-  }
-
   final List<Transaction> _userTransactions = [
     Transaction(
       id: 't1',
@@ -58,13 +51,28 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          child: NewTransaction(_addNewTransactions),
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text('Personal Expenses'),
         actions: <Widget>[
-          IconButton(onPressed: () {}, icon: Icon(Icons.add_box_rounded))
+          IconButton(
+              onPressed: () => _startAddNewTransaction(context),
+              icon: Icon(Icons.add_box_rounded))
         ],
       ),
       body: SingleChildScrollView(
@@ -74,10 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Card(
               child: Text('CHART'),
-              color: Colors.green,
+              color: Theme.of(context).primaryColor,
               elevation: 5,
             ),
-            NewTransaction(_addNewTransactions),
             TransactionList(_userTransactions),
           ],
         ),
@@ -85,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () => _startAddNewTransaction(context),
       ),
     );
   }
